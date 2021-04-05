@@ -6,6 +6,8 @@ The application does not have a front template. There are only entities, listene
 
 ## Installation with Docker ##
 
+See `.env` file, there are environment variables for the tenants build service (TENANT_DATABASE_HOST, etc...)
+
 #### Run console commands for Docker & Symfony install
 
 ```
