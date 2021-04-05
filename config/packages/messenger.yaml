@@ -1,0 +1,14 @@
+framework:
+    messenger:
+        transports:
+            async_priority_high:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                serializer: App\Messenger\Serializer\JsonSerializer
+                retry_strategy:
+                    max_retries: 3
+                    delay: 1000
+                    multiplier: 2
+                    max_delay: 0
+        routing:
+            'App\Messenger\Message\BuildTenantMessage': async_priority_high
+

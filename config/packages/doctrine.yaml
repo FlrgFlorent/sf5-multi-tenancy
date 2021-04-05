@@ -1,19 +1,41 @@
 doctrine:
     dbal:
-        override_url: true
-        url: '%env(resolve:DATABASE_URL)%'
-
-        # IMPORTANT: You MUST configure your server version,
-        # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '13'
+        default_connection: default
+        connections:
+            default:
+                url: '%env(resolve:DATABASE_URL)%'
+                driver: 'pdo_mysql'
+                server_version: '5.7'
+                charset: utf8mb4
+            tenant:
+                driver: 'pdo_mysql'
+                server_version: '5.7'
+                charset: utf8mb4
+                host: '%env(resolve:TENANT_DATABASE_HOST)%'
+                port: '%env(resolve:TENANT_DATABASE_PORT)%'
+                wrapper_class: App\Doctrine\DBAL\TenantConnection
     orm:
-        auto_generate_proxy_classes: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
-        auto_mapping: true
-        mappings:
-            App:
-                is_bundle: false
-                type: annotation
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
+        default_entity_manager: default
+        entity_managers:
+            default:
+                connection: default
+                mappings:
+                    Main:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Entity/Main'
+                        prefix: 'App\Entity\Main'
+                        alias: Main
+            tenant:
+                connection: tenant
+                mappings:
+                    Company:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Entity/Tenant'
+                        prefix: 'App\Entity\Tenant'
+                        alias: Tenant
+
+    #        auto_generate_proxy_classes: true
+    #        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+    #        auto_mapping: true

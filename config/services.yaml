@@ -4,6 +4,25 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    TENANT_DATABASE_HOST: '%env(TENANT_DATABASE_HOST)%'
+    TENANT_DATABASE_PORT: '%env(TENANT_DATABASE_PORT)%'
+    TENANT_DATABASE_BUILDUSER: '%env(TENANT_DATABASE_BUILDUSER)%'
+    TENANT_DATABASE_BUILDPASSWORD: '%env(TENANT_DATABASE_BUILDPASSWORD)%'
+
+    allowed_commands:
+        - doctrine:database:create
+        - doctrine:database:drop
+        - doctrine:schema:update
+        - doctrine:schema:create
+        - doctrine:schema:drop
+        - doctrine:fixtures:load
+        - doctrine:migrations:diff
+        - doctrine:migrations:execute
+        - doctrine:migrations:generate
+        - doctrine:migrations:migrate
+        - doctrine:migrations:version
+        - doctrine:migrations:status
+        - doctrine:mapping:info
 
 services:
     # default configuration for services in *this* file
@@ -29,3 +48,23 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    main.repository.tenant:
+        class: App\Repository\Main\TenantRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - App\Entity\Main\Tenant
+
+    tenant.command.database.listener:
+        class: App\Listener\Command\DatabaseListener
+        tags:
+            - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: 254 }
+
+    tenant.command.listener:
+        class: App\Listener\Command\CommandListener
+        arguments:
+            - '@doctrine.dbal.tenant_connection'
+            - '@main.repository.tenant'
+            - '%allowed_commands%'
+        tags:
+            - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: 255 }
