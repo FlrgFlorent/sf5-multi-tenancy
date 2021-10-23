@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users in {{ tenant.name }}{% endblock %}
+
+{% block body %}
+
+    <style type="text/css">
+		body { text-align: center; padding: 10%; font: 20px Helvetica, sans-serif; color: #333; }
+		h1 { font-size: 50px; margin: 0; }
+		article { display: block; text-align: left; max-width: 750px; margin: 0 auto; }
+		a { color: #dc8100; text-decoration: none; }
+		a:hover { color: #333; text-decoration: none; }
+		@media only screen and (max-width : 480px) {
+			h1 { font-size: 40px; }
+		}
+        ul {
+            margin-bottom: 100px;
+        }
+    </style>
+
+
+    <article>
+        <h1>Users in {{ tenant.name }}</h1>
+        <ul>
+            {% for user in users %}
+                <li>
+                    User ID : {{ user.id }}
+                    <br>
+                    User Name : {{ user.name }}
+                </li>
+            {% endfor %}
+        </ul>
+        <p id="signature">&mdash; <a href="https://www.linkedin.com/in/florent-fulleringer/" target="_blank">Florent Flrg</a></p>
+    </article>
+
+    <div class=""></div>
+    <h1></h1>
+
+
+
+{% endblock %}
